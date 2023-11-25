@@ -439,6 +439,8 @@ func fillUserResponse(ctx context.Context, tx *sqlx.Tx, userModel UserModel) (Us
 		IconHash: iconHash,
 	}
 
+	fmt.Printf("IconHash for User(%d): %s", userModel.ID, iconHash)
+
 	return user, nil
 }
 
