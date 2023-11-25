@@ -86,7 +86,8 @@ type PostIconResponse struct {
 }
 
 func getIconHandler(c echo.Context) error {
-	ctx := c.Request().Context()
+	ctx, span := startSpan(c.Request().Context(), "getIconHandler")
+	defer span.End()
 
 	username := c.Param("username")
 
@@ -104,6 +105,7 @@ func getIconHandler(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, "failed to get user: "+err.Error())
 	}
 
+	// TODO fileに落としてX-Accel-redirect
 	var image []byte
 	if err := tx.GetContext(ctx, &image, "SELECT image FROM icons WHERE user_id = ?", user.ID); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
