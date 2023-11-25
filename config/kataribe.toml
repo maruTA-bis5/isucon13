@@ -143,6 +143,10 @@ name = 'GET /api/livestream/:id/ngwords'
 regexp = 'GET /api/livestream/.*/statistics'
 name = 'GET /api/livestream/:id/statistics'
 
+[[bundle]]
+regexp = 'POST /api/livestream/.*/enter'
+name = 'POST /api/livestream/:id/enter'
+
 ################################################################################
 # Replace
 ################################################################################
