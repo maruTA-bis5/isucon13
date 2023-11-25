@@ -112,15 +112,15 @@ regexp = 'GET /api/livestream/search\?tag=.*'
 name = 'GET /api/livestream/search (tag)'
 
 [[bundle]]
-regexp = 'POST /api/livestream/[0-9]+/moderate'
+regexp = 'POST /api/livestream/.*/moderate'
 name = 'POST /api/livestream/:id/moderate'
 
 [[bundle]]
-regexp = 'POST /api/livestream/[0-9]+/reaction'
+regexp = 'POST /api/livestream/.*/reaction'
 name = 'POST /api/livestream/:id/reaction'
 
 [[bundle]]
-regexp = 'POST /api/livestream/[0-9]+/livecomment'
+regexp = 'POST /api/livestream/.*/livecomment'
 name = 'POST /api/livestream/:id/livecomment'
 
 
