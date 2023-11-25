@@ -123,6 +123,13 @@ name = 'POST /api/livestream/:id/reaction'
 regexp = 'POST /api/livestream/.*/livecomment'
 name = 'POST /api/livestream/:id/livecomment'
 
+[[bundle]]
+regexp = 'GET /api/livestream/.*/reaction'
+name = 'GET /api/livestream/:id/reaction'
+
+[[bundle]]
+regexp = 'GET /api/livestream/.*/livecomment'
+name = 'GET /api/livestream/:id/livecomment'
 
 ################################################################################
 # Replace
