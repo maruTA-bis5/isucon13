@@ -248,7 +248,7 @@ func getLivestreamStatisticsHandler(c echo.Context) error {
 			livestreams
 			LEFT JOIN reactions ON livestreams.id = reactions.livestream_id
 			LEFT JOIN livecomments ON livestreams.id = livecomments.livestream_id
-		GROUP BY livestreams.livestream_id
+		GROUP BY livestreams.id
 	`); err != nil && !errors.Is(err, sql.ErrNoRows) {
 		return echo.NewHTTPError(http.StatusInternalServerError, "failed to calculate scores: "+err.Error())
 	}
