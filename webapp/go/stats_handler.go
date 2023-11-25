@@ -146,21 +146,43 @@ func getUserStatisticsHandler(c echo.Context) error {
 	var totalLivecomments int64
 	var totalTip int64
 	var livestreams []*LivestreamModel
-	if err := tx.SelectContext(ctx, &livestreams, "SELECT * FROM livestreams WHERE user_id = ?", user.ID); err != nil && !errors.Is(err, sql.ErrNoRows) {
-		return echo.NewHTTPError(http.StatusInternalServerError, "failed to get livestreams: "+err.Error())
+
+	type userScore struct {
+		Tips     int64 `db:"tips"`
+		Comments int64 `db:"comments"`
 	}
 
-	for _, livestream := range livestreams {
-		var livecomments []*LivecommentModel
-		if err := tx.SelectContext(ctx, &livecomments, "SELECT * FROM livecomments WHERE livestream_id = ?", livestream.ID); err != nil && !errors.Is(err, sql.ErrNoRows) {
-			return echo.NewHTTPError(http.StatusInternalServerError, "failed to get livecomments: "+err.Error())
-		}
-
-		for _, livecomment := range livecomments {
-			totalTip += livecomment.Tip
-			totalLivecomments++
-		}
+	var score userScore
+	if err := tx.GetContext(ctx, &score, `
+		SELECT
+			COUNT(reactions.id) AS comments,
+			IFNULL(SUM(IFNULL(livecomments.tip, 0)), 0) AS tips
+		FROM
+			livestreams
+			LEFT JOIN reactions ON livestreams.id = reactions.livestream_id
+			LEFT JOIN livecomments ON livestreams.id = livecomments.livestream_id
+		WHERE livestreams.user_id = ?
+	`, user.ID); err != nil && !errors.Is(err, sql.ErrNoRows) {
+		return echo.NewHTTPError(http.StatusInternalServerError, "failed to calculate score: "+err.Error())
 	}
+
+	// if err := tx.SelectContext(ctx, &livestreams, "SELECT * FROM livestreams WHERE user_id = ?", user.ID); err != nil && !errors.Is(err, sql.ErrNoRows) {
+	// 	return echo.NewHTTPError(http.StatusInternalServerError, "failed to get livestreams: "+err.Error())
+	// }
+
+	// for _, livestream := range livestreams {
+	// 	var livecomments []*LivecommentModel
+	// 	if err := tx.SelectContext(ctx, &livecomments, "SELECT * FROM livecomments WHERE livestream_id = ?", livestream.ID); err != nil && !errors.Is(err, sql.ErrNoRows) {
+	// 		return echo.NewHTTPError(http.StatusInternalServerError, "failed to get livecomments: "+err.Error())
+	// 	}
+
+	// 	for _, livecomment := range livecomments {
+	// 		totalTip += livecomment.Tip
+	// 		totalLivecomments++
+	// 	}
+	// }
+	totalTip = score.Tips
+	totalLivecomments = score.Comments
 
 	// 合計視聴者数
 	var viewersCount int64
