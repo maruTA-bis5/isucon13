@@ -126,7 +126,7 @@ func main() {
 
 	e := echo.New()
 	e.Debug = true
-	e.Use(otelecho.Middleware())
+	e.Use(otelecho.Middleware("isupipe"))
 	e.Logger.SetLevel(echolog.DEBUG)
 	e.Use(middleware.Logger())
 	cookieStore := sessions.NewCookieStore(secret)
