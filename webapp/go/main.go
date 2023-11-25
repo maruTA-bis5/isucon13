@@ -118,6 +118,11 @@ func initializeHandler(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, "failed to initialize: "+err.Error())
 	}
 
+	if err := calculateFallbackImageHash(); err != nil {
+		c.Logger().Warnf("calculate fallback image hash failed: ", err.Error())
+		return echo.NewHTTPError(http.StatusInternalServerError, "failed to initialize (calculate fallback image hash): "+err.Error())
+	}
+
 	c.Request().Header.Add("Content-Type", "application/json;charset=utf-8")
 	return c.JSON(http.StatusOK, InitializeResponse{
 		Language: "golang",

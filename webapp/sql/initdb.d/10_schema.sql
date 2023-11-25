@@ -18,6 +18,13 @@ CREATE TABLE `icons` (
 ) ENGINE=InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
 CREATE INDEX icons_user_id ON icons (user_id);
 
+-- 画像 TODO snowflakeとかでID採番した方がいい気もする(アプリ側で)
+CREATE TABLE `icons_noblob` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `user_id` BIGINT NOT NULL,
+  `hash` VARCHAR(255) NOT NULL
+) ENGINE=InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
+
 -- ユーザごとのカスタムテーマ
 CREATE TABLE `themes` (
   `id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,

@@ -1,0 +1,10 @@
+linters-settings:
+  custom:
+    example:
+      path: ../../golanglint-isucon/isucon-lint.so
+      description: Check TODO without author
+      original-url: github.com/maruTA-bis5/golanglint-isucon
+
+linters:
+  enable:
+    - example
