@@ -106,16 +106,18 @@ func getIconHandler(c echo.Context) error {
 	}
 
 	// TODO fileに落としてX-Accel-redirect
-	var image []byte
-	if err := tx.GetContext(ctx, &image, "SELECT image FROM icons WHERE user_id = ?", user.ID); err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return c.File(fallbackImage)
-		} else {
-			return echo.NewHTTPError(http.StatusInternalServerError, "failed to get user icon: "+err.Error())
-		}
-	}
+	c.Response().Header().Set("X-Accel-Redirect", fmt.Sprintf("/icon/%s", user.ID))
+	return nil
+	// var image []byte
+	// if err := tx.GetContext(ctx, &image, "SELECT image FROM icons WHERE user_id = ?", user.ID); err != nil {
+	// 	if errors.Is(err, sql.ErrNoRows) {
+	// 		return c.File(fallbackImage)
+	// 	} else {
+	// 		return echo.NewHTTPError(http.StatusInternalServerError, "failed to get user icon: "+err.Error())
+	// 	}
+	// }
 
-	return c.Blob(http.StatusOK, "image/jpeg", image)
+	// return c.Blob(http.StatusOK, "image/jpeg", image)
 }
 
 func postIconHandler(c echo.Context) error {
@@ -146,7 +148,17 @@ func postIconHandler(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, "failed to delete old user icon: "+err.Error())
 	}
 
-	rs, err := tx.ExecContext(ctx, "INSERT INTO icons (user_id, image) VALUES (?, ?)", userID, req.Image)
+	f, err := os.Create(fmt.Sprintf("../icon/%s.jpg", userID))
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "Failed to open icon file to write: "+err.Error())
+	}
+	_, err = f.Write(req.Image)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "Failed to write icon file: "+err.Error())
+	}
+	f.Close()
+
+	rs, err := tx.ExecContext(ctx, "INSERT INTO icons (user_id) VALUES (?)", userID)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "failed to insert new user icon: "+err.Error())
 	}
