@@ -99,24 +99,53 @@ duration_index = 10
 #regexp = '^(GET|HEAD) /images/'
 #name = 'GET /images/*'
 
+[[bundle]]
 regexp = 'GET /api/user/.*/icon'
 name = 'GET /api/user/:username/icon'
 
+[[bundle]]
 regexp = 'GET /api/user/.*/statistics'
 name = 'GET /api/user/:username/statistics'
 
+[[bundle]]
 regexp = 'GET /api/livestream/search\?tag=.*'
 name = 'GET /api/livestream/search (tag)'
 
-regexp = 'POST /api/livestream/[0-9]+/moderate'
+[[bundle]]
+regexp = 'POST /api/livestream/.*/moderate'
 name = 'POST /api/livestream/:id/moderate'
 
-regexp = 'POST /api/livestream/[0-9]+/reaction'
+[[bundle]]
+regexp = 'POST /api/livestream/.*/reaction'
 name = 'POST /api/livestream/:id/reaction'
 
-regexp = 'POST /api/livestream/[0-9]+/livecomment'
+[[bundle]]
+regexp = 'POST /api/livestream/.*/livecomment'
 name = 'POST /api/livestream/:id/livecomment'
 
+[[bundle]]
+regexp = 'GET /api/livestream/.*/reaction'
+name = 'GET /api/livestream/:id/reaction'
+
+[[bundle]]
+regexp = 'GET /api/livestream/.*/livecomment'
+name = 'GET /api/livestream/:id/livecomment'
+
+[[bundle]]
+regexp = 'GET /api/livestream/.*/report'
+name = 'GET /api/livestream/:id/report'
+
+[[bundle]]
+regexp = 'GET /api/livestream/.*/ngwords'
+name = 'GET /api/livestream/:id/ngwords'
+
+[[bundle]]
+regexp = 'GET /api/livestream/.*/statistics'
+name = 'GET /api/livestream/:id/statistics'
+
+[[bundle]]
+regexp = 'POST /api/livestream/.*/enter'
+name = 'POST /api/livestream/:id/enter'
 
 ################################################################################
 # Replace
