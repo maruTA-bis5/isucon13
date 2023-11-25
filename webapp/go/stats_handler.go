@@ -181,9 +181,9 @@ func getUserStatisticsHandler(c echo.Context) error {
 
 	// 合計視聴者数
 	var livestreams []*LivestreamModel
-	// if err := tx.SelectContext(ctx, &livestreams, "SELECT * FROM livestreams WHERE user_id = ?", user.ID); err != nil && !errors.Is(err, sql.ErrNoRows) {
-	// 	return echo.NewHTTPError(http.StatusInternalServerError, "failed to get livestreams: "+err.Error())
-	// }
+	if err := tx.SelectContext(ctx, &livestreams, "SELECT * FROM livestreams WHERE user_id = ?", user.ID); err != nil && !errors.Is(err, sql.ErrNoRows) {
+		return echo.NewHTTPError(http.StatusInternalServerError, "failed to get livestreams: "+err.Error())
+	}
 	var viewersCount int64
 	for _, livestream := range livestreams {
 		var cnt int64
