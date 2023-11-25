@@ -20,7 +20,8 @@ CREATE TABLE `icons` (
 -- 画像 TODO snowflakeとかでID採番した方がいい気もする(アプリ側で)
 CREATE TABLE `icons_noblob` (
   `id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `user_id` BIGINT NOT NULL
+  `user_id` BIGINT NOT NULL,
+  `hash` VARCHAR NOT NULL
 ) ENGINE=InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
 
 -- ユーザごとのカスタムテーマ
