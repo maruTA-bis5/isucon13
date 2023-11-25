@@ -102,7 +102,7 @@ func getUserStatisticsHandler(c echo.Context) error {
 			) AS score
 		FROM users
 			INNER JOIN livestreams ON livestreams.user_id = users.id
-			LEFT_JOIN reactions ON livestreams.id = reactions.livestream_id
+			LEFT JOIN reactions ON livestreams.id = reactions.livestream_id
 			LEFT JOIN livecomments ON livestreams.id = livecomments.livestream_id
 		GROUP BY users.name
 	`); err != nil && !errors.Is(err, sql.ErrNoRows) {
