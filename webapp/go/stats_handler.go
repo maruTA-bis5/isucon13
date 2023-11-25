@@ -201,6 +201,8 @@ func getUserStatisticsHandler(c echo.Context) error {
 
 func getLivestreamStatisticsHandler(c echo.Context) error {
 	ctx := c.Request().Context()
+	ctx, span := startSpan(ctx, "getLivestreamStatisticsHandler")
+	defer span.End()
 
 	if err := verifyUserSession(c); err != nil {
 		return err
@@ -234,7 +236,7 @@ func getLivestreamStatisticsHandler(c echo.Context) error {
 
 	// ランク算出
 	var ranking LivestreamRanking
-	for _, livestream := range livestreams {
+	for _, livestream := range livestreams { // FIXME N+1
 		var reactions int64
 		if err := tx.GetContext(ctx, &reactions, "SELECT COUNT(*) FROM livestreams l INNER JOIN reactions r ON l.id = r.livestream_id WHERE l.id = ?", livestream.ID); err != nil && !errors.Is(err, sql.ErrNoRows) {
 			return echo.NewHTTPError(http.StatusInternalServerError, "failed to count reactions: "+err.Error())

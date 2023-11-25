@@ -161,6 +161,8 @@ func getNgwords(c echo.Context) error {
 func postLivecommentHandler(c echo.Context) error {
 	ctx := c.Request().Context()
 	defer c.Request().Body.Close()
+	ctx, span := startSpan(ctx, "postLivecommentHandler")
+	defer span.End()
 
 	if err := verifyUserSession(c); err != nil {
 		return err
