@@ -34,7 +34,8 @@ type PostReactionRequest struct {
 }
 
 func getReactionsHandler(c echo.Context) error {
-	ctx := c.Request().Context()
+	ctx, span := startSpan(c.Request().Context(), "getReactionsHandler")
+	defer span.End()
 
 	if err := verifyUserSession(c); err != nil {
 		// echo.NewHTTPErrorが返っているのでそのまま出力
@@ -84,7 +85,8 @@ func getReactionsHandler(c echo.Context) error {
 }
 
 func postReactionHandler(c echo.Context) error {
-	ctx := c.Request().Context()
+	ctx, span := startSpan(c.Request().Context(), "postReactionHandler")
+	defer span.End()
 	livestreamID, err := strconv.Atoi(c.Param("livestream_id"))
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "livestream_id in path must be integer")
