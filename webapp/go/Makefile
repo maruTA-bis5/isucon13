@@ -13,6 +13,7 @@ TAG=isupipe:latest
 
 .PHONY: build
 build:
+	go mod tidy
 	CGO_ENABLED=0 $(LINUX_TARGET_ENV)  $(BUILD) -o $(DESTDIR)/isupipe -ldflags "-s -w"
 
 .PHONY: darwin
@@ -26,3 +27,7 @@ docker_image: clean build
 .PHONY: clean
 clean:
 	$(DOCKER_RMI) -f $(TAG)
+
+.PHONY: vet
+vet:
+	go vet -vettool=/home/maruyama/isucon/golanglint-isucon/main

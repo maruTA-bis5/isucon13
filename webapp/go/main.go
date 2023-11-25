@@ -4,6 +4,7 @@ package main
 // sqlx的な参考: https://jmoiron.github.io/sqlx/
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net"
@@ -16,6 +17,8 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/uptrace/opentelemetry-go-extra/otelsqlx"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho"
 
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
@@ -93,11 +96,11 @@ func connectDB(logger echo.Logger) (*sqlx.DB, error) {
 		conf.ParseTime = parseTime
 	}
 
-	db, err := sqlx.Open("mysql", conf.FormatDSN())
+	db, err := otelsqlx.Open("mysql", conf.FormatDSN())
 	if err != nil {
 		return nil, err
 	}
-	db.SetMaxOpenConns(10)
+	db.SetMaxOpenConns(10) // TODO 増やしてもいいかも
 
 	if err := db.Ping(); err != nil {
 		return nil, err
@@ -119,8 +122,11 @@ func initializeHandler(c echo.Context) error {
 }
 
 func main() {
+	installTracerProvider(context.Background())
+
 	e := echo.New()
 	e.Debug = true
+	e.Use(otelecho.Middleware())
 	e.Logger.SetLevel(echolog.DEBUG)
 	e.Use(middleware.Logger())
 	cookieStore := sessions.NewCookieStore(secret)
