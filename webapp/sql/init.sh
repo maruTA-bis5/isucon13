@@ -72,4 +72,4 @@ bash ../pdns/init_zone.sh
 
 # icon初期化
 rm -rf ../icon/*
-
+cp ../img/NoImage.jpg ../icon/
