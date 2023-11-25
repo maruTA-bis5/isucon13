@@ -99,21 +99,27 @@ duration_index = 10
 #regexp = '^(GET|HEAD) /images/'
 #name = 'GET /images/*'
 
+[[bundle]]
 regexp = 'GET /api/user/.*/icon'
 name = 'GET /api/user/:username/icon'
 
+[[bundle]]
 regexp = 'GET /api/user/.*/statistics'
 name = 'GET /api/user/:username/statistics'
 
+[[bundle]]
 regexp = 'GET /api/livestream/search\?tag=.*'
 name = 'GET /api/livestream/search (tag)'
 
+[[bundle]]
 regexp = 'POST /api/livestream/[0-9]+/moderate'
 name = 'POST /api/livestream/:id/moderate'
 
+[[bundle]]
 regexp = 'POST /api/livestream/[0-9]+/reaction'
 name = 'POST /api/livestream/:id/reaction'
 
+[[bundle]]
 regexp = 'POST /api/livestream/[0-9]+/livecomment'
 name = 'POST /api/livestream/:id/livecomment'
 
