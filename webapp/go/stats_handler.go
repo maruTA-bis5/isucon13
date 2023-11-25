@@ -242,7 +242,7 @@ func getLivestreamStatisticsHandler(c echo.Context) error {
 
 	if err := tx.SelectContext(ctx, &ranking, `
 		SELECT
-			livestreams.livestream_id,
+			livestreams.id,
 			COUNT(reactions.id) + IFNULL(SUM(IFNULL(livecomments.tip, 0)), 0) AS score
 		FROM
 			livestreams
