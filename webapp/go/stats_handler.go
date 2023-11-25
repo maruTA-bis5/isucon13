@@ -95,7 +95,7 @@ func getUserStatisticsHandler(c echo.Context) error {
 	var ranking UserRanking
 	if err := tx.SelectContext(ctx, &ranking, `
 		SELECT
-			users.name AS name,
+			users.name AS username,
 			(
 				COUNT(reactions.id) +
 				IFNULL(SUM(livecomments.tip), 0)
