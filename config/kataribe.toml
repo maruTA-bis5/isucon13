@@ -131,6 +131,18 @@ name = 'GET /api/livestream/:id/reaction'
 regexp = 'GET /api/livestream/.*/livecomment'
 name = 'GET /api/livestream/:id/livecomment'
 
+[[bundle]]
+regexp = 'GET /api/livestream/.*/report'
+name = 'GET /api/livestream/:id/report'
+
+[[bundle]]
+regexp = 'GET /api/livestream/.*/ngwords'
+name = 'GET /api/livestream/:id/ngwords'
+
+[[bundle]]
+regexp = 'GET /api/livestream/.*/statistics'
+name = 'GET /api/livestream/:id/statistics'
+
 ################################################################################
 # Replace
 ################################################################################
