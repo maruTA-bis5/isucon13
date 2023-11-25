@@ -200,8 +200,7 @@ func getUserStatisticsHandler(c echo.Context) error {
 }
 
 func getLivestreamStatisticsHandler(c echo.Context) error {
-	ctx := c.Request().Context()
-	ctx, span := startSpan(ctx, "getLivestreamStatisticsHandler")
+	ctx, span := startSpan(c.Request().Context(), "getLivestreamStatisticsHandler")
 	defer span.End()
 
 	if err := verifyUserSession(c); err != nil {

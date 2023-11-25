@@ -86,8 +86,7 @@ type PostIconResponse struct {
 }
 
 func getIconHandler(c echo.Context) error {
-	ctx := c.Request().Context()
-	ctx, span := startSpan(ctx, "getIconHandler")
+	ctx, span := startSpan(c.Request().Context(), "getIconHandler")
 	defer span.End()
 
 	username := c.Param("username")

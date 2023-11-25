@@ -34,8 +34,7 @@ type PostReactionRequest struct {
 }
 
 func getReactionsHandler(c echo.Context) error {
-	ctx := c.Request().Context()
-	ctx, span := startSpan(ctx, "getReactionsHandler")
+	ctx, span := startSpan(c.Request().Context(), "getReactionsHandler")
 	defer span.End()
 
 	if err := verifyUserSession(c); err != nil {
@@ -86,8 +85,7 @@ func getReactionsHandler(c echo.Context) error {
 }
 
 func postReactionHandler(c echo.Context) error {
-	ctx := c.Request().Context()
-	ctx, span := startSpan(ctx, "postReactionHandler")
+	ctx, span := startSpan(c.Request().Context(), "postReactionHandler")
 	defer span.End()
 	livestreamID, err := strconv.Atoi(c.Param("livestream_id"))
 	if err != nil {
