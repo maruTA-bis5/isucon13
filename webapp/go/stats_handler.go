@@ -97,14 +97,19 @@ func getUserStatisticsHandler(c echo.Context) error {
 		SELECT
 			users.name AS username,
 			(
-				COUNT(reactions.id) +
-				IFNULL(SUM(livecomments.tip), 0)
+				(
+					SELECT COUNT(reactions.id)
+					FROM reactions
+					INNER JOIN livestreams ON reactions.livestream_id = livestreams.id
+				)
+				+
+				(
+					SELECT IFNULL(SUM(livecomments.tip), 0)
+					FROM livecomments
+					INNER JOIN livestreams ON livecomments.livestream_id = livestreams.id
+				)
 			) AS score
 		FROM users
-			INNER JOIN livestreams ON livestreams.user_id = users.id
-			LEFT JOIN reactions ON livestreams.id = reactions.livestream_id
-			LEFT JOIN livecomments ON livestreams.id = livecomments.livestream_id
-		GROUP BY users.name
 	`); err != nil && !errors.Is(err, sql.ErrNoRows) {
 		return echo.NewHTTPError(http.StatusInternalServerError, "failed to calculate scores: "+err.Error())
 	}
