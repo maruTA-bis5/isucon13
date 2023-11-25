@@ -144,7 +144,7 @@ func postIconHandler(c echo.Context) error {
 	}
 	defer tx.Rollback()
 
-	if _, err := tx.ExecContext(ctx, "DELETE FROM icons_noblog WHERE user_id = ?", userID); err != nil {
+	if _, err := tx.ExecContext(ctx, "DELETE FROM icons_noblob WHERE user_id = ?", userID); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "failed to delete old user icon: "+err.Error())
 	}
 
