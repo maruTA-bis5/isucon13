@@ -424,10 +424,7 @@ func fillUserResponse(ctx context.Context, tx *sqlx.Tx, userModel UserModel) (Us
 		if !errors.Is(err, sql.ErrNoRows) {
 			return User{}, err
 		}
-		//image, err = os.ReadFile(fallbackImage)
-		// if err != nil {
-		// 	return User{}, err
-		// }
+		iconHash = fallbackImageHash
 	}
 
 	user := User{
@@ -443,4 +440,16 @@ func fillUserResponse(ctx context.Context, tx *sqlx.Tx, userModel UserModel) (Us
 	}
 
 	return user, nil
+}
+
+var fallbackImageHash string
+
+func calculateFallbackImageHash() error {
+	f, err := os.ReadFile("../img/NoImage.jpg")
+	if err != nil {
+		return err
+	}
+	hash := sha256.Sum256(f)
+	fallbackImageHash = fmt.Sprintf("%x", hash)
+	return nil
 }

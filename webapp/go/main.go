@@ -125,6 +125,7 @@ func initializeHandler(c echo.Context) error {
 
 func main() {
 	installTracerProvider(context.Background())
+	calculateFallbackImageHash()
 
 	e := echo.New()
 	e.Debug = true
