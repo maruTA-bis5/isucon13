@@ -189,7 +189,7 @@ func getUserStatisticsHandler(c echo.Context) error {
 	SELECT COUNT(*) 
 	FROM 
 		livestreams
-		INNER JOIN livestream_viewers_history ON livestreams.id = livestreams_viewers_history.livestream_id
+		INNER JOIN livestream_viewers_history ON livestreams.id = livestream_viewers_history.livestream_id
 	WHERE
 		livestreams.user_id = ?
 	`, user.ID); err != nil && !errors.Is(err, sql.ErrNoRows) {
