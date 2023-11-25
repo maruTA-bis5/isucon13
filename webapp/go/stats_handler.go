@@ -267,7 +267,7 @@ func getLivestreamStatisticsHandler(c echo.Context) error {
 	if err := tx.SelectContext(ctx, &tips, `
 	SELECT
 		livestream_id,
-		IFNULL(SUM(tip), 0) AS mount
+		IFNULL(SUM(tip), 0) AS amount
 	FROM livecomments
 	GROUP BY livestream_id
 			`); err != nil && !errors.Is(err, sql.ErrNoRows) {
