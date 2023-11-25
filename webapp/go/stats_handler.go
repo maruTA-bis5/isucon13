@@ -239,60 +239,18 @@ func getLivestreamStatisticsHandler(c echo.Context) error {
 
 	// ランク算出
 	var ranking LivestreamRanking
-	var rankEntryByStream = make(map[int64]*LivestreamRankingEntry, 0)
 
-	var reactions []*reactionByStream
-	if err := tx.SelectContext(ctx, &reactions, `
-				SELECT
-					livestream_id,
-					COUNT(*) AS reaction_count
-				FROM reactions
-				GROUP BY livestream_id
-			`); err != nil && !errors.Is(err, sql.ErrNoRows) {
-
-		return echo.NewHTTPError(http.StatusInternalServerError, "failed to count reactions: "+err.Error())
-	}
-	for _, reaction := range reactions {
-		rankEntryByStream[reaction.LivestreamID] = &LivestreamRankingEntry{
-			LivestreamID: reaction.LivestreamID,
-			Score:        reaction.Count,
-		}
-	}
-
-	type tipByStream struct {
-		LivestreamID int64 `db:"livestream_id"`
-		Amount       int64 `db:"amount"`
-	}
-	var tips []*tipByStream
-	if err := tx.SelectContext(ctx, &tips, `
-	SELECT
-		livestream_id,
-		IFNULL(SUM(tip), 0) AS amount
-	FROM livecomments
-	GROUP BY livestream_id
-			`); err != nil && !errors.Is(err, sql.ErrNoRows) {
-
-		return echo.NewHTTPError(http.StatusInternalServerError, "failed to count tips: "+err.Error())
-	}
-	for _, tip := range tips {
-		entry := rankEntryByStream[tip.LivestreamID]
-		if entry == nil {
-			rankEntryByStream[tip.LivestreamID] = &LivestreamRankingEntry{
-				LivestreamID: tip.LivestreamID,
-				Score:        tip.Amount,
-			}
-		} else {
-			rankEntryByStream[tip.LivestreamID] = &LivestreamRankingEntry{
-				LivestreamID: tip.LivestreamID,
-				Score:/*reactions*/ entry.Score + tip.Amount,
-			}
-		}
-	}
-	for _, entry := range rankEntryByStream {
-		ranking = append(ranking, LivestreamRankingEntry{
-			LivestreamID: entry.LivestreamID,
-			Score:        entry.Score,
-		})
+	if err := tx.SelectContext(ctx, &ranking, `
+		SELECT
+			livestreams.livestream_id,
+			COUNT(reactions.id) + IFNULL(SUM(IFNULL(livecomments.tip, 0)), 0) AS score
+		FROM
+			livestreams
+			LEFT JOIN reactions ON livestreams.id = reactions.livestream_id
+			LEFT JOIN livecomments ON livestreams.id = livecomments.livestream_id
+		GROUP BY livestreams.livestream_id
+	`); err != nil && !errors.Is(err, sql.ErrNoRows) {
+		return echo.NewHTTPError(http.StatusInternalServerError, "failed to calculate scores: "+err.Error())
 	}
 
 	// for _, livestream := range livestreams { // FIXME N+1
