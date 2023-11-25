@@ -414,7 +414,7 @@ func moderateHandler(c echo.Context) error {
 			livestream_id = ? AND
 			(SELECT COUNT(*)
 			FROM
-			(SELECT livecomments.comment) AS texts
+			(SELECT livecomments.comment AS text) AS texts
 			INNER JOIN
 			(SELECT CONCAT('%', ?, '%')	AS pattern) AS patterns
 			ON texts.text LIKE patterns.pattern) >= 1;
