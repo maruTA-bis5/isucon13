@@ -192,7 +192,7 @@ func getUserStatisticsHandler(c echo.Context) error {
 		INNER JOIN livestream_viewers_history ON livestreams.id = livestreams_viewers_history.livestream_id
 	WHERE
 		livestreams.user_id = ?
-	`, user.ID); err != nil && !error.Is(err, sql.ErrNoRows) {
+	`, user.ID); err != nil && !errors.Is(err, sql.ErrNoRows) {
 		return echo.NewHTTPError(http.StatusInternalServerError, "failed to get livestream_view_history: "+err.Error())
 	}
 
