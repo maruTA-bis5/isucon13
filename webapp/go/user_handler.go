@@ -144,7 +144,7 @@ func postIconHandler(c echo.Context) error {
 	}
 	defer tx.Rollback()
 
-	if _, err := tx.ExecContext(ctx, "DELETE FROM icons WHERE user_id = ?", userID); err != nil {
+	if _, err := tx.ExecContext(ctx, "DELETE FROM icons_noblog WHERE user_id = ?", userID); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "failed to delete old user icon: "+err.Error())
 	}
 
@@ -158,7 +158,7 @@ func postIconHandler(c echo.Context) error {
 	}
 	f.Close()
 
-	rs, err := tx.ExecContext(ctx, "INSERT INTO icons (user_id) VALUES (?)", userID)
+	rs, err := tx.ExecContext(ctx, "INSERT INTO icons_noblob (user_id) VALUES (?)", userID)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "failed to insert new user icon: "+err.Error())
 	}
