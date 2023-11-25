@@ -19,10 +19,10 @@ type LivestreamStatistics struct {
 }
 
 type LivestreamRankingEntry struct {
-	LivestreamID int64
-	Score        int64
+	LivestreamID int64 `db:"livestream_id"`
+	Score        int64 `db:"score"`
 }
-type LivestreamRanking []LivestreamRankingEntry
+type LivestreamRanking []*LivestreamRankingEntry
 
 func (r LivestreamRanking) Len() int      { return len(r) }
 func (r LivestreamRanking) Swap(i, j int) { r[i], r[j] = r[j], r[i] }
@@ -242,7 +242,7 @@ func getLivestreamStatisticsHandler(c echo.Context) error {
 
 	if err := tx.SelectContext(ctx, &ranking, `
 		SELECT
-			livestreams.id,
+			livestreams.id AS livestream_id,
 			COUNT(reactions.id) + IFNULL(SUM(IFNULL(livecomments.tip, 0)), 0) AS score
 		FROM
 			livestreams
