@@ -106,7 +106,7 @@ func getIconHandler(c echo.Context) error {
 	}
 
 	// TODO fileに落としてX-Accel-redirect
-	c.Response().Header().Set("X-Accel-Redirect", fmt.Sprintf("/icon/%s", user.ID))
+	c.Response().Header().Set("X-Accel-Redirect", fmt.Sprintf("/icon/%d", user.ID))
 	return nil
 	// var image []byte
 	// if err := tx.GetContext(ctx, &image, "SELECT image FROM icons WHERE user_id = ?", user.ID); err != nil {
@@ -148,7 +148,7 @@ func postIconHandler(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, "failed to delete old user icon: "+err.Error())
 	}
 
-	f, err := os.Create(fmt.Sprintf("../icon/%s.jpg", userID))
+	f, err := os.Create(fmt.Sprintf("../icon/%d.jpg", userID))
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Failed to open icon file to write: "+err.Error())
 	}
